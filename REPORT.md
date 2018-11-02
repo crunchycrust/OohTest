@@ -38,7 +38,8 @@ true .
 ```
 
 Реализация:
-```lasto([X], X).
+```prolog
+lasto([X], X).
 lasto([_|T], X) :-
 	lasto(T, X).
 ```
