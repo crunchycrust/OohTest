@@ -29,7 +29,7 @@ removeo(X, [Y|T], [Y|Z]) :-
 
 %permuteo: 1) if both lists are empty, all is well;
 %	    2) if Tail of our 'asked' list is a permuted Y list, which is a X without H from our 'asked' list, 
-%		then X is a permutation of the 'asked' list. 
+%	       then X is a permutation of the 'asked' list. 
 permuteo([], []).
 permuteo([H|T], X) :-
     permuteo(T, Y),
@@ -37,7 +37,7 @@ permuteo([H|T], X) :-
 
 %sublisto: 1) empty list is a sublist of its own;
 %	    2) if we get L by appending smth1 to L1 (smthL1) and if we get L1 by appending X to sth2 (Xsth2), 
-%		then X is a sublist of L list (sth1Xsth2 = L).
+%	       then X is a sublist of L list (sth1Xsth2 = L).
 sublisto([], []).
 sublisto(X, L):-
 	appendo(_, L1, L), 
