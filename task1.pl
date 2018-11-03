@@ -3,39 +3,39 @@
 % 3. Реализация стандартных предикатов обработки списков.
 
 %membero: 1) X is a member of any list whose head is X;
-%	  2) if X is a member of Y(Tail), X is a member of any list whose tail is Y(Tail). 
+%	    2) if X is a member of Y(Tail), X is a member of any list whose tail is Y(Tail). 
 membero(X, [X|_]).
 membero(X, [_|Y]) :-
 	membero(X, Y).
 
 %appendo: 1) appending any list X to the empty list results in X list;
-%	  2) if appending Z to Y results in W, appending Z to [X|Y] results in [X|W].
+%	    2) if appending Z to Y results in W, appending Z to [X|Y] results in [X|W].
 appendo([], X, X).
 appendo([X|Y], Z, [X|W]) :-
 	appendo(Y, Z, W).
 
 %lengtho: 1) the length of the empty list is 0;
-%	  2) if the length of a X is N1 and N = N1+1, the list of any head and of X tail has the length of N.
+%	    2) if the length of a X is N1 and N = N1+1, the list of any head and of X tail has the length of N.
 lengtho([], 0).
 lengtho([_|X], N) :-
 	lengtho(X, N1),
 	N is N1+1.
 
 %removeo: 1) if X is the head of the list, then tail is the list without X;
-%	  2) if Z is a list without X as the head(T without X), then removal X from [Y|T] results in [Y|Z].  
+%	    2) if Z is a list without X as the head(T without X), then removal X from [Y|T] results in [Y|Z].  
 removeo(X, [X|T], T).
 removeo(X, [Y|T], [Y|Z]) :-
 	removeo(X, T, Z).
 
 %permuteo: 1) if both lists are empty, all is well;
-%	   2) if Tail of our 'asked' list is a permuted Y list, which is a X without H from our 'asked' list, then X is a permutation of the 'asked' list. 
+%	     2) if Tail of our 'asked' list is a permuted Y list, which is a X without H from our 'asked' list, then X is a permutation of the 'asked' list. 
 permuteo([], []).
 permuteo([H|T], X) :-
     permuteo(T, Y),
     removeo(H, X, Y).
 
 %sublisto: 1) empty list is a sublist of its own;
-%	   2) if we get L by appending smth1 to L1 (smthL1) and if we get L1 by appending X to sth2 (Xsth2), then X is a sublist of L list (sth1Xsth2 = L).
+%	     2) if we get L by appending smth1 to L1 (smthL1) and if we get L1 by appending X to sth2 (Xsth2), then X is a sublist of L list (sth1Xsth2 = L).
 sublisto([], []).
 sublisto(X, L):-
 	appendo(_, L1, L), 
@@ -44,7 +44,7 @@ sublisto(X, L):-
 % Предикаты обработки списков.
 % 4. Получение последнего элемента (without basic predicates)
 %lasto: 1) if there is only X in the list, then X is the last element;
-%	2) if X is the last element of T, then X is the last element of [_|T] (of any head).
+%	  2) if X is the last element of T, then X is the last element of [_|T] (of any head).
 lasto([X], X).
 lasto([_|T], X) :-
 	lasto(T, X).
