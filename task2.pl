@@ -19,7 +19,6 @@ group(103,['Сидоркин','Эфиркина','Сиплюсплюсов','П�
 studsearch([], _, 0).
 studsearch([grade(X, Y)|T], Stud, M) :-
 	X == Stud, !,
-	studsearch(T, Stud, N),
 	M is Y + N.
 studsearch([_|T], Stud, N) :-
 	studsearch(T, Stud, N).
@@ -46,7 +45,6 @@ fcheck(Stud, Sub) :-
 fcount([], 0).
 fcount([grade(_, Y)|T], C) :-
 	Y < 3, !,
-	fcount(T, N),
 	C is N + 1.
 fcount([_|T], N) :-
 	fcount(T, N).
@@ -66,7 +64,6 @@ checkMax([], _, 0).
 checkMax([H|T], Max, LM) :-
 	average(H, A),
 	A =:= Max, !,
-	checkMax(T, Max, LM),
 	write(H), nl.
 checkMax([_|T], Max, _) :-
 	checkMax(T, Max, _).
