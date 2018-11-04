@@ -40,7 +40,7 @@ fcheck(Stud, Sub) :-
 	studsearch(Y, Stud, M),
 	M > 2.
 
-% 2) Äëÿ êàæäîãî ïðåäìåòà, íàéòè êîëè÷åñòâî íå ñäàâøèõ ñòóäåíòîâ
+% 2) Для каждого предмета, найти количество не сдавших студентов
 
 fcount([], 0).
 fcount([grade(_, Y)|T], C) :-
@@ -54,26 +54,24 @@ fail(Sub, X) :-
 	subject(Sub, L),
 	fcount(L, X).
 
-% 2) Для каждого предмета, найти количество не сдавших студентов
+% 3) Для каждой группы, найти студента (студентов) с максимальным средним баллом
 
 avg([H|_], X) :-
 	average(H, X).
 avg([_|T], X) :-
 	avg(T, X).
 
-checkMax([], _, 0).	
-checkMax([H|T], Max, LM) :-
+checkMax([], _).	
+checkMax([H|T], Max) :-
 	average(H, A),
 	A =:= Max, !,
-	checkMax(T, Max, LM),
+	checkMax(T, Max),
 	write(H), nl.
-checkMax([_|T], Max, _) :-
-	checkMax(T, Max, _).
+checkMax([_|T], Max) :-
+	checkMax(T, Max).
 
-gmax(N, X) :-
+gmax(N) :-
 	group(N, Y),
 	bagof(M, avg(Y, M), L),
 	max_list(L, Max),
-	checkMax(Y, Max, X).
-	
-
+	checkMax(Y, Max).
