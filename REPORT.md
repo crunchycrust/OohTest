@@ -100,6 +100,13 @@ false.
 
 Реализация:
 ```prolog
+%lengtho: 1) the length of the empty list is 0;
+%	   2) if the length of a X is N1 and N = N1+1, the list of any head and of X tail has the length of N.
+lengtho([], 0).
+lengtho([_|X], N) :-
+	lengtho(X, N1),
+	N is N1+1.
+
 complen(L1, L2) :-
 	lengtho(L1, N),
 	lengtho(L2, C),
