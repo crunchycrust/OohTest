@@ -304,25 +304,29 @@ avg([H|_], X) :-
 avg([_|T], X) :-
 	avg(T, X).
 
-checkMax([], _, 0).	
-checkMax([H|T], Max, LM) :-
+checkMax([], _).	
+checkMax([H|T], Max) :-
 	average(H, A),
 	A =:= Max, !,
-	checkMax(T, Max, LM),
+	checkMax(T, Max),
 	write(H), nl.
-checkMax([_|T], Max, _) :-
-	checkMax(T, Max, _).
+checkMax([_|T], Max) :-
+	checkMax(T, Max).
 
-
-gmax(N, X) :-
+gmax(N) :-
 	group(N, Y),
 	bagof(M, avg(Y, M), L),
 	max_list(L, Max),
-	checkMax(Y, Max, X).
+	checkMax(Y, Max).
 ```
-
-*
-*
+* `avg(L, X)`: возвращает средний балл всех учеников списка-группы, используя предикат `average(Stud, X)`и рекурсию;
+* `checkMax(L, Max)`: печатает учеников с максимальным средним баллом из группы.  
+Логика применения отсечения такая же, как в предикате `studsearch(L, Stud, M)`:  
+'a' - ;  
+'b' - ;  
+'c' - ;  
+'d' - ;  
+* `gmax(N)`: объединяет средние баллы учеников определённой группы (N) в список (L), ищет максимальный средний балл из этого списка с помощью стандартного предиката `max_list(L, Max)` и вызывает  `checkMax(Y, Max)` со списком-группой (Y) и полученным максимальным баллом.
 
 ## Выводы
 
