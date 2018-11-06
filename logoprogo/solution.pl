@@ -16,6 +16,6 @@ knownot(painter, plumber).
 
 solution([Con, Dav, Fed]) :-
 	prof(Pr1), prof(Pr2), Pr1 \== Pr2,
-	prof(Pr3), Pr2 \== Pr3, Pr1 \== Pr3,
+	prof(Pr3), Pr1 \== Pr3, Pr2 \== Pr3, 
 	Con = Pr1, Dav = Pr2, Fed = Pr3,
 	knownot(Fed, Dav), not(knows(Fed, Dav)).
