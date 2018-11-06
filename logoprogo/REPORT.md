@@ -66,11 +66,6 @@ solution([Con, Dav, Fed]) :-
 ```
 ## Результат
 ```prolog 
-?- solution([Кондратьев, Давидов, Федоров]).
-Кондратьев = carpenter,
-Давидов = painter,
-Федоров = plumber .
-
 ?- solution([Condratiev, Davidov, Fedorov]).
 Condratiev = carpenter,
 Davidov = painter,
