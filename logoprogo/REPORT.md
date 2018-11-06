@@ -70,6 +70,11 @@ solution([Con, Dav, Fed]) :-
 Кондратьев = carpenter,
 Давидов = painter,
 Федоров = plumber .
+
+?- solution([Condratiev, Davidov, Fedorov]).
+Condratiev = carpenter,
+Davidov = painter,
+Fedorov = plumber .
 ```
 ## Выводы
 
