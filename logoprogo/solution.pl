@@ -9,13 +9,16 @@ prof(carpenter).
 prof(painter).
 prof(plumber).
 
-knows(painter, carpenter).
-knows(carpenter, painter).
+heard(painter, carpenter).
+heard(carpenter, painter).
+heard(carpenter, plumber).
+heard(plumber, carpenter).
 
-knownot(painter, plumber).
+heard(painter, plumber).
 
 solution([Con, Dav, Fed]) :-
-	prof(Pr1), prof(Pr2), Pr1 \== Pr2,
-	prof(Pr3), Pr1 \== Pr3, Pr2 \== Pr3, 
-	Con = Pr1, Dav = Pr2, Fed = Pr3,
-	knownot(Fed, Dav), not(knows(Fed, Dav)).
+	prof(Pr3), prof(Pr2), Pr3 \== Pr2,
+	Fed = Pr3, Dav = Pr2,
+	not(heard(Fed, Dav)),
+	prof(Pr1), Pr3 \== Pr1, Pr2 \== Pr1, 
+	Con = Pr1.
