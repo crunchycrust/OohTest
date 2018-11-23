@@ -72,15 +72,213 @@ move(A, B) :-
 Для предотвращения зацикливания используется предикат `findchildren([Now|T], [Child, Now|T])`.
 
 ## Результаты
+Выполнение задания:
 
-Приведите результаты работы программы: найденные пути, время, затраченное на поиск тем или иным алгоритмом, длину найденного первым пути. Используйте таблицы,
-если необходимо.
+```prolog
+?- roomDF(["t", "c", "ac", "t", "_", "w"], ["t", "c", "w", "t", "_", "ac"]).
 
-! Алгоритм поиска |  Длина найденного первым пути  |  Время работы  |
-|-------------------------------------------------------------------|
-| В глубину       |                                |                |
-| В ширину        |                                |                |
-| ID              |                                |                |
+Depth-first search
+
+[t,c,ac,t,_,w]
+[t,c,ac,t,w,_]
+[_,c,ac,t,w,t]
+[c,_,ac,t,w,t]
+[c,ac,_,t,w,t]
+[c,ac,t,_,w,t]
+[c,ac,t,w,_,t]
+[c,ac,t,w,t,_]
+[_,ac,t,w,t,c]
+[ac,_,t,w,t,c]
+[ac,t,_,w,t,c]
+[ac,t,w,_,t,c]
+[ac,t,w,t,_,c]
+[ac,t,w,t,c,_]
+[_,t,w,t,c,ac]
+[t,_,w,t,c,ac]
+[t,w,_,t,c,ac]
+[t,w,t,_,c,ac]
+[t,w,t,c,_,ac]
+[t,w,t,c,ac,_]
+[_,w,t,c,ac,t]
+[w,_,t,c,ac,t]
+[w,t,_,c,ac,t]
+[w,t,c,_,ac,t]
+[w,t,c,ac,_,t]
+[w,t,c,ac,t,_]
+[_,t,c,ac,t,w]
+[t,_,c,ac,t,w]
+[t,c,_,ac,t,w]
+[t,c,ac,_,t,w]
+[_,c,ac,t,t,w]
+[c,_,ac,t,t,w]
+[c,ac,_,t,t,w]
+[c,ac,t,_,t,w]
+[c,ac,t,t,_,w]
+[c,ac,t,t,w,_]
+[_,ac,t,t,w,c]
+[ac,_,t,t,w,c]
+[ac,t,_,t,w,c]
+[ac,t,t,_,w,c]
+[ac,t,t,w,_,c]
+[ac,t,t,w,c,_]
+[_,t,t,w,c,ac]
+[t,_,t,w,c,ac]
+[t,t,_,w,c,ac]
+[t,t,w,_,c,ac]
+[t,t,w,c,_,ac]
+[t,t,w,c,ac,_]
+[_,t,w,c,ac,t]
+[t,_,w,c,ac,t]
+[t,w,_,c,ac,t]
+[t,w,c,_,ac,t]
+[t,w,c,ac,_,t]
+[t,w,c,ac,t,_]
+[_,w,c,ac,t,t]
+[w,_,c,ac,t,t]
+[w,c,_,ac,t,t]
+[w,c,ac,_,t,t]
+[w,c,ac,t,_,t]
+[w,c,ac,t,t,_]
+[w,c,_,t,t,ac]
+[w,c,t,_,t,ac]
+[w,c,t,t,_,ac]
+[w,c,t,t,ac,_]
+[_,c,t,t,ac,w]
+[c,_,t,t,ac,w]
+[c,t,_,t,ac,w]
+[c,t,t,_,ac,w]
+[c,t,t,ac,_,w]
+[c,t,t,ac,w,_]
+[_,t,t,ac,w,c]
+[t,_,t,ac,w,c]
+[t,t,_,ac,w,c]
+[t,t,ac,_,w,c]
+[t,t,ac,w,_,c]
+[t,t,ac,w,c,_]
+[_,t,ac,w,c,t]
+[t,_,ac,w,c,t]
+[t,ac,_,w,c,t]
+[t,ac,w,_,c,t]
+[t,ac,w,c,_,t]
+[t,ac,w,c,t,_]
+[_,ac,w,c,t,t]
+[ac,_,w,c,t,t]
+[ac,w,_,c,t,t]
+[ac,w,c,_,t,t]
+[ac,w,c,t,_,t]
+[ac,w,c,t,t,_]
+[_,w,c,t,t,ac]
+[w,_,c,t,t,ac]
+[w,t,c,t,_,ac]
+[w,t,c,t,ac,_]
+[_,t,c,t,ac,w]
+[t,_,c,t,ac,w]
+[t,c,_,t,ac,w]
+[t,c,t,_,ac,w]
+[t,c,t,ac,_,w]
+[t,c,t,ac,w,_]
+[_,c,t,ac,w,t]
+[c,_,t,ac,w,t]
+[c,t,_,ac,w,t]
+[c,t,ac,_,w,t]
+[c,t,ac,w,_,t]
+[c,t,ac,w,t,_]
+[_,t,ac,w,t,c]
+[t,_,ac,w,t,c]
+[t,ac,_,w,t,c]
+[t,ac,w,_,t,c]
+[t,ac,w,t,_,c]
+[t,ac,w,t,c,_]
+[_,ac,w,t,c,t]
+[ac,_,w,t,c,t]
+[ac,w,_,t,c,t]
+[ac,w,t,_,c,t]
+[ac,w,t,c,_,t]
+[ac,w,t,c,t,_]
+[_,w,t,c,t,ac]
+[w,_,t,c,t,ac]
+[w,t,_,c,t,ac]
+[w,t,c,_,t,ac]
+[_,t,c,w,t,ac]
+[t,_,c,w,t,ac]
+[t,c,_,w,t,ac]
+[t,c,w,_,t,ac]
+[t,c,w,t,_,ac]
+
+TIME: 0.9562380313873291
+
+true .
+
+?- roomBF(["t", "c", "ac", "t", "_", "w"], ["t", "c", "w", "t", "_", "ac"]).
+
+Breadth-first search
+
+[t,c,ac,t,_,w]
+[t,c,ac,t,w,_]
+[_,c,ac,t,w,t]
+[t,c,ac,_,w,t]
+[t,c,ac,w,_,t]
+[t,c,ac,w,t,_]
+[t,c,_,w,t,ac]
+[t,c,w,_,t,ac]
+[t,c,w,t,_,ac]
+
+TIME: 0.16299009323120117
+
+true .
+
+?- roomI(["t", "c", "ac", "t", "_", "w"], ["t", "c", "w", "t", "_", "ac"]).
+
+Iterative deepening search
+
+[t,c,ac,t,_,w]
+[t,c,ac,t,w,_]
+[_,c,ac,t,w,t]
+[t,c,ac,_,w,t]
+[t,c,ac,w,_,t]
+[t,c,ac,w,t,_]
+[t,c,_,w,t,ac]
+[t,c,w,_,t,ac]
+[t,c,w,t,_,ac]
+
+TIME: 0.08586001396179199
+
+true.
+```
+
+Другие тесты:
+```prolog
+?- roomI(["t", "c", "_", "w"], ["t", "c", "w", "_"]).
+
+Iterative deepening search
+
+[t,c,_,w]
+[t,c,w,_]
+
+TIME: 0.013580799102783203
+
+true .
+
+?- roomBF(["t", "c", "ac", "t", "_", "w"], ["t", "c", "ac", "t", "_", "w"]).
+
+Breadth-first search
+
+[t,c,ac,t,_,w]
+
+TIME: 0.008810043334960938
+
+true .
+
+?- roomDF([], []).
+
+Depth-first search
+
+[]
+
+TIME: 0.005964040756225586
+
+true .
+```
 
 ## Выводы
 
