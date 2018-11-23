@@ -1,26 +1,26 @@
 move(A,B):-
-	append(Begin, ["_", X|Tail], A),
-	append(Begin, [X, "_"|Tail], B).
+	append(End, ["_", X|Tail], A),
+	append(End, [X, "_"|Tail], B).
 
 move(A,B):-
-	append(Begin, [X, "_"|Tail], A),
-	append(Begin, ["_", X|Tail], B).
+	append(End, [X, "_"|Tail], A),
+	append(End, ["_", X|Tail], B).
 
 move(A, B) :-
-	append(Begin, [X, F1, F2, F3, F4, "_"|T], A),
-	append(Begin, ["_", F1, F2, F3, F4, X|T], B).
+	append(End, [X, F1, F2, F3, F4, "_"|T], A),
+	append(End, ["_", F1, F2, F3, F4, X|T], B).
 
 move(A, B) :-
-	append(Begin, ["_", F1, F2, F3, F4, X|T], A),
-	append(Begin, [X, F1, F2, F3, F4, "_"|T], B).
+	append(End, ["_", F1, F2, F3, F4, X|T], A),
+	append(End, [X, F1, F2, F3, F4, "_"|T], B).
 
 move(A, B) :-
-	append(Begin, [X, F1, F2, "_"|T], A),
-	append(Begin, ["_", F1, F2, X|T], B).
+	append(End, [X, F1, F2, "_"|T], A),
+	append(End, ["_", F1, F2, X|T], B).
 
 move(A, B) :-
-	append(Begin, ["_", F1, F2, X|T], A),
-	append(Begin, [X, F1, F2, "_"|T], B).
+	append(End, ["_", F1, F2, X|T], A),
+	append(End, [X, F1, F2, "_"|T], B).
 
 writeo([]).
 writeo([Finish|Start]) :- writeo(Start), write(Finish), nl.
