@@ -7,14 +7,6 @@ move(A,B):-
 	append(End, ["_", X|Tail], B).
 
 move(A, B) :-
-	append(End, [X, F1, F2, F3, F4, "_"|T], A),
-	append(End, ["_", F1, F2, F3, F4, X|T], B).
-
-move(A, B) :-
-	append(End, ["_", F1, F2, F3, F4, X|T], A),
-	append(End, [X, F1, F2, F3, F4, "_"|T], B).
-
-move(A, B) :-
 	append(End, [X, F1, F2, "_"|T], A),
 	append(End, ["_", F1, F2, X|T], B).
 
