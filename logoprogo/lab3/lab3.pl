@@ -1,21 +1,21 @@
 move(A,B):-
-	append(End, ["_", X|Tail], A),
-	append(End, [X, "_"|Tail], B).
+	append(E, ["_", X|Tail], A),
+	append(E, [X, "_"|Tail], B).
 
 move(A,B):-
-	append(End, [X, "_"|Tail], A),
-	append(End, ["_", X|Tail], B).
+	append(E, [X, "_"|Tail], A),
+	append(E, ["_", X|Tail], B).
 
 move(A, B) :-
-	append(End, [X, F1, F2, "_"|T], A),
-	append(End, ["_", F1, F2, X|T], B).
+	append(E, [X, F1, F2, "_"|T], A),
+	append(E, ["_", F1, F2, X|T], B).
 
 move(A, B) :-
-	append(End, ["_", F1, F2, X|T], A),
-	append(End, [X, F1, F2, "_"|T], B).
+	append(E, ["_", F1, F2, X|T], A),
+	append(E, [X, F1, F2, "_"|T], B).
 
 writeo([]).
-writeo([Finish|Start]) :- writeo(Start), write(Finish), nl.
+writeo([H|T]) :-  write(H), nl, writeo(T).
 
 findchildren([Now|T], [Child, Now|T]) :-
     	move(Now, Child),
@@ -30,7 +30,8 @@ roomDF(Initial, Final) :-
 	nl, write('Depth-first search'), nl, nl, 
     	get_time(T1),
 	df([Initial], Final, Res),
-	writeo(Res),
+	reverse(Res, Ref),
+	writeo(Ref),
 	get_time(T2), nl, 
 	T is T2 - T1,
 	write('TIME: '), write(T), nl, nl.
@@ -44,8 +45,9 @@ bf([Now|BeforeNow], Goal, Res):-
 roomBF(Initial, Final) :-
     	nl, write('Breadth-first search'), nl, nl,
     	get_time(T1),
-    	bf([[Initial]], Final, Res),	
-    	writeo(Res),
+    	bf([[Initial]], Final, Res),
+	reverse(Res, Ref),	
+    	writeo(Ref),
     	get_time(T2), nl,
     	T is T2 - T1,
     	write('TIME: '), write(T), nl, nl.
@@ -67,7 +69,8 @@ roomI(Initial, Final) :-
 	get_time(T1),
 	expbound(Bound, 1),
 	id([Initial], Final, Res, Bound),
-	writeo(Res),
+	reverse(Res, Ref),
+	writeo(Ref),
 	get_time(T2), nl,
 	T is T2 - T1,
 	write('TIME: '), write(T), nl, nl.
