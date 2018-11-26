@@ -37,7 +37,7 @@ roomDF(Initial, Final) :-
 	write('TIME: '), write(T), nl, nl.
 
 bf([[Goal|T]|_], Goal, [Goal|T]).
-bf([Now|BeforeNow], Goal, Res):-
+bf([Now|BeforeNow], Goal, Res) :-
     	findall(X, findchildren(Now, X), Children),
     	append(BeforeNow, Children, CBN),
     	bf(CBN, Goal, Res).
@@ -53,14 +53,14 @@ roomBF(Initial, Final) :-
     	write('TIME: '), write(T), nl, nl.
 
 id([Goal|T], Goal, [Goal|T], _).
-id(Now, Goal, Res, Bound):- 
+id(Now, Goal, Res, Bound) :- 
 	Bound > 0,
 	findchildren(Now, Next),
 	NBound is Bound-1,
 	id(Next, Goal, Res, NBound).
 
 expbound(X, X).
-expbound(B, X):-
+expbound(B, X) :-
 	X1 is X + 1,
 	expbound(B, X1).
 
