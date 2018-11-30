@@ -1,0 +1,95 @@
+user@lubuntu:~/INF/oslabs1819/lab2/lab2$ ./no
+HELP
+0) 'h'    - help;
+1) 'a'    - add;
+2) 'i'    - insert;
+3) 'g'    - value from index;
+4) 'p'    - print array;
+5) 'r'    - remove with index;
+6) 'e'    - empty your array;
+7) Ctrl+D - quit
+
+a
+Enter your value, please: 4
+Value added
+
+p
+Array: 4 
+Complete
+
+i
+Enter your index: 5
+Enter your value: 3
+Value added
+
+p
+Array: 4 0 0 0 0 3 
+Complete
+
+i
+Enter your index: 3
+Enter your value: 988
+Value added
+
+g
+Enter your index, please: 3
+Value with 3 index = 988
+Search complete
+
+g
+Enter your index, please: 4
+Value with 4 index = 0
+Search complete
+
+r
+Enter your index, please: 0
+Removal complete
+
+p
+Array: 0 0 988 0 3 
+Complete
+
+a
+Enter your value, please: -44
+Value added
+
+p
+Array: 0 0 988 0 3 -44 
+Complete
+
+h
+HELP
+0) 'h'    - help;
+1) 'a'    - add;
+2) 'i'    - insert;
+3) 'g'    - value from index;
+4) 'p'    - print array;
+5) 'r'    - remove with index;
+6) 'e'    - empty your array;
+7) Ctrl+D - quit
+
+e
+Complete
+
+p
+Your array is empty
+Complete
+
+i
+Enter your index: 4
+Enter your value: 7
+Value added
+
+p
+Array: 0 0 0 0 7 
+Complete
+
+e
+Complete
+
+g
+Enter your index, please: 5
+Error: invalid index
+Search complete
+
+user@lubuntu:~/INF/oslabs1819/lab2/lab2$ 
