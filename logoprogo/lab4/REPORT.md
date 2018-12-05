@@ -22,16 +22,56 @@
 
 ## Задание
 
-Перенесите сюда условие задачи - это упростит проверку и чтение отчета.
+10. Реализовать разбор фраз языка, представляющих собой положительные и отрицательные высказывания. В результате предикат должен выдавать все атомарные глубинные структуры.  
+
+Пример:  
+Запрос:  
+```prolog
+?- decompose(["Саша", "любит", "игрушки", "но", "не", "любит", "кубики", "и", "мячи"],X).
+?- decompose(["Ира", "не", "любит", "стихи", "и", "прозы", "а", "любит", "пьесы"],X).
+```
+Результат:   
+```prolog
+X=likes("Саша", "игрушки");
+X=not_likes("Саша", "кубики");
+X=not_likes("Саша", "мячи").
+
+X=not_likes("Ира", "стихи"). 
+X=not_likes("Ира", "прозы"). 
+X=likes("Ира", "пьесы").
+```
 
 ## Принцип решения
 
 Опишите своими словами принцип решения задачи, приведите важные фрагменты кода. 
 
 ## Результаты
+```prolog
+?- decompose(["Alex", "likes", "toys", "but", "he", "does", "not", "like", "poems", "and", "peaches"], X).
+X = doesnotlike("Alex", "poems") ;
+X = doesnotlike("Alex", "peaches") ;
+X = likes("Alex", "toys") ;
+false.
 
-Приведите результаты работы программы.
+?- decompose(["Irene", "does", "not", "like", "songs", "and", "poems", "but", "likes", "bears"], X).
+X = likes("Irene", "bears") ;
+X = doesnotlike("Irene", "songs") ;
+X = doesnotlike("Irene", "poems") ;
+false.
 
+?- decompose(["Peter", "does", "not", "like", "reports", "flowers", "frogs", "and", "winter", "but", "she", "likes", "bears"], X).
+X = likes("Peter", "bears") ;
+X = doesnotlike("Peter", "reports") ;
+X = doesnotlike("Peter", "flowers") ;
+X = doesnotlike("Peter", "frogs") ;
+X = doesnotlike("Peter", "winter") ;
+false.
+
+?- decompose(["Yuna", "likes", "bananas", "but", "does", "not", "like", "winter"], X).
+X = doesnotlike("Yuna", "winter") ;
+X = likes("Yuna", "bananas") ;
+false.
+```
 ## Выводы
 
 Сформулируйте *содержательные* выводы по лабораторной работе. 
