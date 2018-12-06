@@ -22,14 +22,15 @@ objects("peaches").
 objects("pigeons").
 objects("horses").
 
-like(A, B) :-
-	append(_, ["likes"|B], A).
-dislike(A, B) :-
-	append(_, ["does", "not", "like"|B], A).
 butph(A, B) :-
 	append(_, ["but"|B], A).
 butph(A, B) :- 
 	append(B, ["but"|_], A).
+
+like(A, B) :-
+	append(_, ["likes"|B], A).
+dislike(A, B) :-
+	append(_, ["does", "not", "like"|B], A).
 
 obj([H|_], H, _) :- objects(H).
 obj([_|T], O, P) :- obj(T, O, P).
