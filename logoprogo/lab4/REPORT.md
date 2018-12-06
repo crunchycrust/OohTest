@@ -16,8 +16,6 @@
 
 
 ## Введение
-
-
 Существует 2 основных способа анализа естественных и искусственных языков:  
 1) Анализ ключевых слов, основанный ключевых словах, являющихся значениями переменнных предикатов, и в котором грамматическая корректность предложения не играет роли;
 2) Грамматический анализ делится на 2 вида: контекстно-свободный и контекстно-зависимый.  
@@ -48,8 +46,93 @@ X=likes("Ира", "пьесы").
 ```
 
 ## Принцип решения
+Грамматику фразовой стуктуры можно разделить на 2 вида: CFG и DCG.  
 
-Опишите своими словами принцип решения задачи, приведите важные фрагменты кода. 
+*Контекстно-свободные грамматики (CFG) представляют собой систему для определения выражений языка в правилах, которые являются рекурсивными выражениями, называемыми non-terminals (категории, подвыражения - они обычно начинаютсяс заглавной буквы), и примитивными выражениями - terminals (слова - с маленькой буквы).
+
+В данной работе разбор предложений при помощи CFG можно представить следующим образом (это упрощённый пример):
+```
+Decompose-> Subject ButPhrase
+Butphrase -> But VerbPhrase
+VerbPhrase -> Like LikeObj
+VerbPhrase -> Dislike DislikeObj
+LikeObj -> Obj
+DislikeObj -> Obj
+
+Subject -> person
+But -> but
+Like -> like
+Dislike -> dislike
+Obj -> objects
+```
+Первая часть - грамматические правила, вторая - словарь/лексика.  
+Такую классификацию выражения и его подвыражений можно представить в дереве фразовой структуры (phrase-structure tree) или parse tree.  
+
+Далее эти выражения необходимо преобразовать в предикаты вида:  
+1) Для правил 'dec(X, Y) :- sub(X, Z), bp(Z, Y).';
+2) Для лексики 'sub(X, Y) :- connects(person, X, Y).'.
+
+*Но всё же в этой работе используется грамматика, построенная на определённых предложениях (Definite Clause Grammar - DCG). Она, по сути, отличается от CFG только тем, что ползволяет 'расширять' правила, не ограничиваясь всего лишь двухпараметрическими предикатами. Non-terminals в DCG могут иметь аргументы-предикаты, а terminals могут быть 'произвольными' членами.  
+
+
+Словарь для задачи:
+```prolog
+person("Irene").
+person("Alex").
+person("Peter").
+person("Yuna").
+person("Anna").
+person("Sam").
+
+objects("toys").
+objects("poems").
+objects("songs").
+objects("flowers").
+objects("bananas").
+objects("autumn").
+objects("summer").
+objects("spring").
+objects("winter").
+objects("bears").
+objects("frogs").
+objects("reports").
+objects("silence").
+objects("peaches").
+objects("pigeons").
+objects("horses").
+```
+
+Грамматические правила повторяеют почти все, описанные выше.
+```prolog
+butph(A, B) :-
+	append(_, ["but"|B], A).
+butph(A, B) :- 
+	append(B, ["but"|_], A).
+
+like(A, B) :-
+	append(_, ["likes"|B], A).
+dislike(A, B) :-
+	append(_, ["does", "not", "like"|B], A).
+
+obj([H|_], H, _) :- objects(H).
+obj([_|T], O, P) :- obj(T, O, P).
+
+likeobj(L, likes(P, O), P) :-
+	obj(L, O, P).	
+dislikeobj(L, doesnotlike(P, O), P) :-
+	obj(L, O, P).
+
+butphrase(P, L, X) :-
+	butph(L, T), verbphrase(P, T, X).
+verbphrase(P, L, X) :-
+	like(L, T), likeobj(T, X, P).
+verbphrase(P, L, X) :-
+	dislike(L, T), dislikeobj(T, X, P).
+
+decompose([H|T], X) :-
+	person(H),
+	butphrase(H, T, X).
+```
 
 ## Результаты
 ```prolog
