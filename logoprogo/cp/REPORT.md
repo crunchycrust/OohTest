@@ -111,15 +111,15 @@ minlaw(X, Y) :- married(Z, Y), mother(X, Z).
 Поэтому воспользуемся отсечением. Выражение `married` будет верным только тогда, когда части по обе стороны от cut верны.  
 Раньше, когда мы доходили до ситуации `'Hathaway Anna' \= 'Hathaway Anna'`, то просто начинали искать нового ребёнка (возвращались к `child(Z, Y)`). Но теперь если условия до cut верны, а после - не соблюдены, то мы сразу получаем `fail.`  
 
-Как было раньше отмечено, ситуация "'Barnard John' и 'Nash Thomas' - мужья 'Shakespeare Susanna'" - своеобразное исключение. Поэтому для неё написаны соответствующие предикаты-факты.
+Как было раньше отмечено, ситуация "`'Barnard John' и 'Nash Thomas' - мужья 'Shakespeare Susanna'`" - своеобразное исключение. Поэтому для неё написаны соответствующие предикаты-факты.
 ```prolog
 child(X, Y) :- parent(Y, X).
 
 married(X, Y) :- child(Z, Y), !, child(Z, X), X \= Y.
 married('Shakespeare Elizabeth', 'Nash Thomas').
 married('Nash Thomas', 'Shakespeare Elizabeth').
-married('Shakespeare Elizabeth', 'Barnad John').
-married('Barnad John', 'Shakespeare Elizabeth').
+married('Shakespeare Elizabeth', 'Barnard John').
+married('Barnard John', 'Shakespeare Elizabeth').
 ```
 Стоит заметить, что здесь также используется предикат `child(X, Y)`. Смысла в нём нет. Это всего лишь "обратный" предикат `parent`, который здесь можно было использовать. Просто с child легче понимать, что происходит.  
 
@@ -163,9 +163,6 @@ X = 'Hathaway Richard' ;
 false.
 
 ?- finlaw(X, 'Shakespeare Edmund').
-false.
-
-?- finlaw(X, 'Barnard John').
 false.
 
 ?- finlaw(X, 'Barnard John').
