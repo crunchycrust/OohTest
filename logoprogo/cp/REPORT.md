@@ -169,6 +169,7 @@ false.
 X = 'Hall John' ;
 false.
 ```
+[Full листинг](cptree.pl)
 ## Определение степени родства
 Определение степени родства двух произвольных индивидов из дерева я решила разбить на 2 основных предиката: `relatednames(P1, P2, List)` и `relist(X, Y, List)`.  
 
@@ -358,7 +359,9 @@ X = [son, grandson, fatherinlaw] ;
 X = ['Unknown Joan', 'Shakespeare Richard', 'Shakespeare William', 'Hathaway Richard'].
 ```
 Например, для `relation('Unknown Joan', 'Hathaway Richard', X).` читается это так:  
-Unknown Joan has a son, Shakespeare Richard. Richard has a grandson, Shakespeare William. William has a father-in-law, Hathaway Richard.
+Unknown Joan has a son, Shakespeare Richard. Richard has a grandson, Shakespeare William. William has a father-in-law, Hathaway Richard.  
+  
+[Full листинг](cptree.pl)
 ## Естественно-языковый интерфейс
 Анализ предложений в данной работе упрощённый, и он совмещён вместе с предикатом, позволяющим задавать вопросы относительно родства и получать осмысленные ответы.  
   
@@ -561,6 +564,7 @@ true .
 Shakespeare Elizabeth is married to Nash Thomas.
 true .
 ```
+[Full листинг](cptree.pl)
 ## Выводы
 
 Сформулируйте *содержательные* выводы по курсовому проекту в целом. Чему он вас научила? 
