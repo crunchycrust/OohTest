@@ -360,7 +360,207 @@ X = ['Unknown Joan', 'Shakespeare Richard', 'Shakespeare William', 'Hathaway Ric
 Например, для `relation('Unknown Joan', 'Hathaway Richard', X).` читается это так:  
 Unknown Joan has a son, Richard. Richard has a grandson, William. William has a father-in-law, Hathaway Richard.
 ## Естественно-языковый интерфейс
+Анализ предложения в данной работе упрощённый, и он совмещён вместе с предикатом, позволяющим задавать вопросы относительно родства и получать осмысленные ответы.  
+  
+Объяснять то, как построен анализ предложения, я буду на основе контекстно-свободной грамматики Пролога (CFG). А при реализации буду использовать Definite Clause Grammar - DCG. Она, по сути, отличается от CFG только тем, что позволяет 'расширять' правила, не ограничиваясь всего лишь двухпараметрическими предикатами. Non-terminals в DCG могут иметь аргументы-предикаты, а terminals могут быть 'произвольными' членами.    
+CFG представляет собой систему для определения выражений языка в правилах, которые являются рекурсивными выражениями, называемыми non-terminals (категории, подвыражения - они обычно начинаются с заглавной буквы), и примитивными выражениями - terminals (слова - со строчной).  
+  
+*  How many brothers\sisters does Person have?  
+  
+Сколько братьев\сестёр у Имя?  
+В предикат подаётся список с частями предложения. Например, `q(['How', 'many', 'brothers', 'does', 'Shakespeare William', 'have', '?']).`  
+  
+Анализ предложения:
+```prolog
+Q -> Question Quantity Relation AuxiliaryVerb Person Verb Mark 
 
+Question -> question
+Quantity -> question
+Relation -> relation
+AuxiliaryVerb -> verbphrase
+Person -> person
+Person -> pronouns
+Verb -> verbphrase
+Mark -> questionmark
+```
+Первая часть - грамматические правила, вторая - словарь/лексика.  
+  
+Стоит заметить, что в данная конструкция позволяет использовать pronouns (he, she, they) вместо имени человека. Но для этого небходимо представить две версии предиката. В первой мы будем искать братьев/сестёр по имени и объявлять глобальную переменную-имя `nb_setval(real, P)`. А во втором, если там будет местоимение, то будем использовать значение этой переменной `nb_getval(real, Name)`. Чтобы поменять значение глобальной переменной, нужно снова задать предложение с именем.  
+  
+Далее будет необходимо при помощи стандартного предиката `setof(X, relative(W, Name, X), L)`, найти всех братьев/сестёр, посчитать длину списка `L` и вывести ответ.  
+  
+Также необходим предикат, который будет выводить правильно построенное предложение, зависящее от количества найденных братьев\сестёр.
+```prolog
+writeoo(Rel, N, P) :-
+	N < 2, !,
+	rel(Rel, W),
+	format('~w has ~w ~w.',[P, N, W]).
+writeoo(Rel, N, P) :-
+	format('~w has ~w ~w.',[P, N, Rel]).
+```
+Словарь:
+```prolog
+pronouns('he'). 
+pronouns('she').
+pronouns('they').
+
+question('How', 'many').
+verbphrase('does', 'have').
+
+mark('?').
+
+rel('brother', 'brother').
+rel('sister', 'sister').
+rel(Rel, X) :-
+	Rel = 'brothers',
+	X = 'brother'.
+rel(Rel, X) :-
+	Rel = 'sisters',
+	X = 'sister'.
+```
+Осуществление предиката:
+```prolog
+q([Q, Qua, Rel, Auxv, P, V, M]) :-
+	question(Q, Qua),
+	verbphrase(Auxv, V),
+	mark(M),
+	rel(Rel, W),
+	sex(P, _),
+	nb_setval(real, P),
+
+	setof(X, relative(W, P, X), L),
+	length(L, Fin),
+	writeoo(Rel, Fin, P).
+
+q([Q, Qua, Rel, Auxv, P, V, M]) :-
+	question(Q, Qua),
+	verbphrase(Auxv, V),
+	mark(M),
+	rel(Rel, W),
+	pronouns(P),
+	nb_getval(real, Name),
+
+	setof(X, relative(W, Name, X), L),
+	length(L, Fin),
+	writeoo(Rel, Fin, Name).
+
+```
+Примеры запросов:
+```prolog
+?- q(['How', 'many', 'brothers', 'does', 'Shakespeare William', 'have', '?']).
+Shakespeare William has 3 brothers.
+true .
+
+?- q(['How', 'many', 'sisters', 'does', 'he', 'have', '?']).
+Shakespeare William has 4 sisters.
+true .
+
+?- q(['How', 'many', 'sisters', 'does', 'Hart Mary', 'have', '?']).
+false.
+
+?- q(['How', 'many', 'brothers', 'does', 'she', 'have', '?']).
+Hart Mary has 3 brothers.
+true .
+
+?- q(['How', 'many', 'sisters', 'does', 'Shakespeare John', 'have', '?']).
+Shakespeare John has 1 sister.
+true .
+```
+    
+* Who is P1 to P2?  
+  
+Кто такой Имя Имю?  
+В предикат подаётся список с частями предложения. Например, `q(['Who', 'is', 'Hart Mary', 'to', 'Shakespeare William', '?']).`  
+  
+Анализ предложения:
+```
+Q -> Question LinkVerb Person1 To Person2 Mark
+
+Question -> question
+LinkVerb -> quesiton
+Person1 -> person
+Person1 -> pronouns
+To -> to
+Person2 -> person
+Person2 -> pronouns
+Mark -> questionmark
+``` 
+Теперь будет 3 версии предиката: 1) когда оба имени пристутствуют (только второе имя будет значением глобальной переменной); 2) когда присутствует только первое имя, а второе - местоимение; 3) первое имя - местоимение.  
+  
+Отношение ищем при помощи предиката `reative(Rel, P2, P1)`. Поэтому не все имена будут иметь соотношения.  
+  
+Для вывода ответа будет использован предикат `writeo(Rel, P1, P2)`, зависящий от Rel (если married, то особый вывод; если aunt\uncle, то aртикль будет 'an').  
+```prolog
+writeo(Rel, P1, P2) :- Rel = married, !, format('~w is married to ~w.', [P1, P2]).
+writeo(Rel, P1, P2) :- (Rel = aunt; Rel = uncle), !, format('~w is an ~w to ~w', [P1, Rel, P2]).
+writeo(Rel, P1, P2) :- format('~w is a ~w to ~w.', [P1, Rel, P2]).
+```
+Добавления в словарь:
+```prolog
+pronouns('him').
+pronouns('her'). 
+pronouns('them').
+
+question('Who', 'is', 'to').
+```
+Осуществления предикатов:
+```prolog
+q([Q, Link, P1, To, P2, M]) :-
+	question(Q, Link, To),
+	mark(M),
+	sex(P1, _), sex(P2, _),
+	nb_setval(real, P2),
+
+	relative(Rel, P2, P1),
+	writeo(Rel, P1, P2).
+
+q([Q, Link, P1, To, P2, M]) :-
+	question(Q, Link, To),
+	mark(M),
+	pronouns(P1),
+	nb_getval(real, Name),
+
+	relative(Rel, P2, Name),
+	writeo(Rel, Name, P2).
+
+q([Q, Link, P1, To, P2, M]) :-
+	question(Q, Link, To),
+	mark(M),
+	pronouns(P2),
+	nb_getval(real, Name),
+
+	relative(Rel, Name, P1),
+	writeo(Rel, P1, Name).
+```
+Примеры запросов:
+```prolog
+?-  q(['Who', 'is', 'Hart Mary', 'to', 'Shakespeare William', '?']).
+Hart Mary is a niece to Shakespeare William.
+true .
+
+?- q(['Who', 'is', 'Hart Mary', 'to', 'him', '?']).
+Hart Mary is a niece to Shakespeare William.
+true .
+
+?- q(['Who', 'is', 'he', 'to', 'Arden Robert', '?']).
+Shakespeare William is a grandson to Arden Robert.
+true .
+
+?- q(['Who', 'is', 'Hart Thomas', 'to', 'Shakespeare John Sr.', '?']).
+false.
+
+?- q(['Who', 'is', 'Hart Thomas', 'to', 'Shakespeare Margaret', '?']).
+Hart Thomas is a cousin to Shakespeare Margaret.
+true .
+
+?- q(['Who', 'is', 'she', 'to', 'Hart Thomas', '?']).
+Shakespeare Margaret is an aunt to Hart Thomas
+true .
+
+?- q(['Who', 'is', 'Shakespeare Elizabeth', 'to', 'Nash Thomas', '?']).
+Shakespeare Elizabeth is married to Nash Thomas.
+true .
+```
 ## Выводы
 
 Сформулируйте *содержательные* выводы по курсовому проекту в целом. Чему он вас научила? 
