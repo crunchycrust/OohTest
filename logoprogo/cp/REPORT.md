@@ -170,9 +170,120 @@ X = 'Hall John' ;
 false.
 ```
 ## Определение степени родства
+Определение степени родства двух произвольных индивидов из дерева я решила разбить на 2 основных предиката: `relatednames(P1, P2, List)` и `relist(X, Y, List)`.  
 
-Приведите описание метода решения, важные фрагменты исходного кода, протокол работы.
+* `relatednames(P1, P2, List)` - предикат, в который подаются имена двух людей и который выводит список имён, связывающий их.
+Так как имена - это узлы дерева, то найти этот список значит найти путь из начального состояния в конечное.
+`Initial` и `Final` состояние будут представлены переменными `P1` и `P2`.  
 
+Переходы от одного состояния в другое описаны предикатами типа `relative(Rel, P1, P2)`. Такие предикаты можно использовать и отдельно, чтобы узнать об отношении между двумя людьми.
+```prolog
+sibling(Sib, Pe) :- father(Pa, Pe), !, father(Pa, Sib), Sib \= Pe.
+sibling(Sib, Pe) :- mother(Pa, Pe), mother(Pa, Sib), Sib \= Pe.
+
+grandparent(X, Y) :- parent(X, Z), parent(Z, Y).
+ggp(X, Y) :- grandparent(X, Z), parent(Z, Y).
+
+relative(sister, P, Sis) :- sibling(Sis, P), sex(Sis, f). 
+relative(brother, P, Bro) :- sibling(Bro, P), sex(Bro, m).
+relative(father, P, Dad) :- father(Dad, P).
+relative(mother, P, Mom) :- mother(Mom, P).
+relative(son, P, Son) :- parent(P, Son), sex(Son, m).
+relative(daughter, P, Dau) :- parent(P, Dau), sex(Dau, f).
+relative(child, P, Chi) :- parent(P, Chi).
+relative(aunt, P, Aunt) :- parent(Pa, P), relative(sister, Pa, Aunt).
+relative(uncle, P, Uncle) :- parent(Pa, P), relative(brother, Pa, Uncle).
+relative(niece, P, Niece) :- relative(daughter, Pa, Niece), sibling(Pa, P).
+relative(cousin, P, Cousin) :- relative(son, Pa, Cousin), sibling(Pa, P).
+relative(grandmother, P, Gp) :- grandparent(Gp, P), sex(Gp, f).
+relative(grandfather, P, Gp) :- grandparent(Gp, P), sex(Gp, m).
+relative(greatgrandmother, P, Ggp) :- ggp(Ggp, P), sex(Ggp, f).
+relative(greatgrandfather, P, Ggp) :- ggp(Ggp, P), sex(Ggp, m).
+relative(grandson, P, Gs) :- grandparent(P, Gs), sex(Gs, m).
+relative(granddaughter, P, Gd) :- grandparent(P, Gd), sex(Gd, f).
+relative(motherinlaw, P, Mil) :- minlaw(Mil, P).
+relative(fatherinlaw, P, Fil) :- finlaw(Fil, P).
+relative(brotherinlaw, P, Bil) :- married(M, P), relative(brother, M, Bil).
+relative(sisterinlaw, P, Sil) :- married(M, P), relative(sister, M, Sil).
+relative(soninlaw, P, Sil) :- relative(daughter, P, Z), married(Sil, Z).
+relative(daughterinlaw, P, Dil) :- relative(son, P, Z), married(Dil, Z).
+relative(married, P, M) :- married(M, P).
+```
+Для предотвращения зацикливания используется предикат вида `filist([Now|T], [New, Now|T], Goal)`. В него подаётся список с последовательностью переходов [Now|T] и `Goal` - конечное состояние, а возвращается обновлённый список.  
+С помощью предиката `relative(_, Now, New)` находим возможного ребёнка, затем проверяем, является ли он членом уже существующего списка при помощи `not(member(New, [Now|T]))`.  
+Если же этот ребёнок оказывается равным нашему `Goal`, то возвращаем обновлённый список с Goal.
+```prolog
+filist([Now|T], [Goal, Now|T], Goal) :-
+	relative(_, Now, Goal).
+filist([Now|T], [New, Now|T], _) :-
+	relative(_, Now, New),
+	not(member(New, [Now|T])).
+```
+  
+Теперь необходимо определить, какой поиск лучше всего подходит для нашего случая.  
+Так ветви дерева состояний не имеют одинаковой длины, и нам необходимо найти кратчайший путь, то воспользуемя поиском в ширину. 
+Поиск в ширину предусматривает в первую очередь переход к вершинам, ближайшим к корню, затем к их детям и т.д. То есть рассматривает всех детей корня слева направо, а потом переходит к их детям, отбрасывая тех, которые являются тупиками.  
+ 
+Поиск с итеративным погружением для данной задачи кажется заманчивым, но с заданием отношений как в одну, так и в другую сторону я боюсь дать неверное максимальное ограничение.  
+   
+Однако при использовании поиска в ширину память может закончится очень быстро, так как мы храним список из всех пройденных списков для проверки.  
+В дереве 39 людей, и, когда степень родства становится равна количеству поколений дерева, можно получить `ERROR: out of global stack`. Для того, чтобы от этого избавиться необходимо сделать правила перехода через одно/два поколения как одну, так и в другую сторону. Например, обозначение предикатов `grandmother/father` и `grandson/daughter`.  
+
+Поиск в ширину гарантирует нахождение кратчайшего пути, поэтому нет смысла в предикатах типа `ancestor` и `descendant`. Однако они всё равно реализованы, хоть и не используются.
+```prolog
+anc(A, P) :- parent(A, P).
+anc(A, P) :- parent(Z, P), anc(A, Z).
+
+des(D, P) :- parent(P, D).
+des(D, P) :- parent(P, Z), des(D, Z).
+
+%relative(ancestor, P, A) :- anc(A, P).
+%relative(descendent, P, D) :- des(D, P).
+```
+  
+Предикат `finame([Now|BeforeNow], Goal, Res)` отвечает за поиск в ширину.  
+[Now|BeforeNow] - аргумент, в котором хранятся все возможные растущие последовательности переходов. Goal - последовательность, являющаяся конечным сотоянием. Res - переменная, в которую пойдёт конечный результат.  
+Сначала с помощью стандартного предиката findall(X, filist(Now, X, Goal), L) находим всех детей последнего узла в списке и складываем их в список списков возможных детей L. Соединяем существующий список решений BeforeNow с новым списком L - CBN, вызываем finame(CBN, Goal, Res). Если первый список решений будет иметь Goal as a head, то Res превращается в [Goal|T], то происходит отсечение, и процесс завершается.
+```prolog
+finame([[Goal|T]|_], Goal, [Goal|T]) :- !.
+finame([Now|BeforeNow], Goal, Res) :-
+	findall(X, filist(Now, X, Goal), L),
+	append(BeforeNow, L, CBN),
+	finame(CBN, Goal, Res).
+```
+
+Так как в предикате `filist` мы добавляем новые элементы в начало списка, нужно его перевернуть перед выводом. Стандартный предикат `reverse(L, List)` используется для этого.  
+  
+Основной предикат `relatednames(P1, P2, List)`:
+```prolog
+relatednames(P1, P2, List) :-
+	finame([[P1]], P2, L),
+	reverse(L, List).
+```
+Примеры запросов:
+```prolog
+?- relatednames('Shakespeare William', 'Hathaway Anne', X).
+X = ['Shakespeare William', 'Hathaway Anne'].
+
+?- relatednames('Shakespeare William', 'Quiney Thomas', X).
+X = ['Shakespeare William', 'Quiney Thomas'].
+
+?- relatednames('Shakespeare John', 'Nash Thomas', X).
+X = ['Shakespeare John', 'Shakespeare Susanna', 'Nash Thomas'].
+
+?- relatednames('Hart Thomas', 'Unknown Joan', X).
+X = ['Hart Thomas', 'Shakespeare Joan2', 'Unknown Joan'].
+
+?- relatednames('Shakespeare John Sr.', 'Hathaway Joan', X).
+X = ['Shakespeare John Sr.', 'Shakespeare Richard', 'Shakespeare William', 'Hathaway Joan'].
+
+?- relatednames('Hathaway Joan', 'Shakespeare John Sr.', X).
+X = ['Hathaway Joan', 'Shakespeare William', 'Shakespeare John Sr.'].
+```
+Стоит отметить, что вызовы `relatednames('Shakespeare John Sr.', 'Hathaway Joan', X).` и `relatednames('Hathaway Joan', 'Shakespeare John Sr.', X).` дали разные результаты.  
+Это произошло из-за того, что для второго случая существует отношение `greatgrandfather`, позволяющее перескочить через 2 поколения. Анологичного отношения `greatgrandson\daughter` нет, поэтому у первого запроса 3 связи, и для их поиска уходит заметно больше времени.  
+
+*
 ## Естественно-языковый интерфейс
 
 ## Выводы
