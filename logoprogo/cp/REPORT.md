@@ -287,6 +287,7 @@ X = ['Hathaway Joan', 'Shakespeare William', 'Shakespeare John Sr.'].
 `relatednames('Hathaway Joan', 'Shakespeare John Sr.', X).` дали разные результаты.  
 Это произошло из-за того, что для второго случая существует отношение `greatgrandfather`, позволяющее перескочить через 2 поколения. Анологичного отношения `greatgrandson\daughter` нет, поэтому у первого запроса 3 связи, и для их поиска уходит заметно больше времени.  
   
+  
 * `relist(P1, P2, List)` - предикат, в который подаются имена двух людей и который выводит список отношений, связывающих людей между ними.  
   
 У нас уже есть предикат для поиска имён между двумя людьми `relatednames(P1, P2, List)`. Используем его, а потом найдём отношения между людьми из `List`.  
@@ -326,7 +327,8 @@ X = [son, grandson, motherinlaw].
 ?- relist('Hathaway Joan', 'Shakespeare John Sr.', X).
 X = [soninlaw, greatgrandfather].
 ```
-
+  
+  
 * `relation(X, Y, List)` предикат позволяет вывести результаты и `relatednames`, и `relist`.  
 В нём нет смысла, просто удобней сразу сопоставлять список отношени и список имён.
 ```prolog
@@ -355,7 +357,7 @@ X = ['Hathaway Richard', 'Shakespeare William', 'Unknown Joan'].
 X = [son, grandson, fatherinlaw] ;
 X = ['Unknown Joan', 'Shakespeare Richard', 'Shakespeare William', 'Hathaway Richard'].
 ```
-Например, для `relation('Unknown Joan', 'Hathaway Richard', X)` читается это так:  
+Например, для `relation('Unknown Joan', 'Hathaway Richard', X).` читается это так:  
 Unknown Joan has a son, Richard. Richard has a grandson, William. William has a father-in-law, Hathaway Richard.
 ## Естественно-языковый интерфейс
 
