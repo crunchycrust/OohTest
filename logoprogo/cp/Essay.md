@@ -186,7 +186,7 @@ Prolog идёт с уже готовы с механизмом вывода, в�
 
 ## Список литературы
 
-1.	Logic and Databases. Past, Present, and Future. Jack Minke;  
+1.	Logic and Databases. Past, Present, and Future. Jack Minker;  
 2.	Prolog and Natural-Language Analysis. Fernando C. N. Pereira and Stuart M. Shieber;  
 3.	Problem Solving with Prolog. John Stobo;  
 4.	Основы современных баз данных. С.Д. Кузнецов;  
